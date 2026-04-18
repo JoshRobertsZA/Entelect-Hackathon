@@ -219,12 +219,16 @@ def build_lap_segments(car, segments, tyre, weather_condition, lap_num, entry_sp
 # ── Output ────────────────────────────────────────────────────────
 
 def build_output(race, segments, tyre_set, car, tyres, available_sets, weather):
-    weather_condition = weather[0]  # Level 1: single dry condition
+    weather_condition = weather[0]
     tyre = tyres[tyre_set.compound]
 
     laps = []
     for lap_num in range(1, race.laps + 1):
-        lap_segments = build_lap_segments(car, segments, tyre, weather_condition)
+        if lap_num == 1:
+            lap_segments = build_lap_segments(car, segments, tyre, weather_condition, lap_num=1, entry_speed=0.0)
+        else:
+            lap_segments = [s.copy() for s in laps[0]["segments"]]
+
         laps.append({
             "lap": lap_num,
             "segments": lap_segments,
@@ -235,7 +239,6 @@ def build_output(race, segments, tyre_set, car, tyres, available_sets, weather):
         "initial_tyre_id": tyre_set.ids[0],
         "laps": laps
     }
-
 # ── Main ──────────────────────────────────────────────────────────
 
 def main():
